@@ -2,6 +2,12 @@
 
 This project demonstrates a **micro-frontend (MFE) architecture** using Module Federation, with Next.js 15 serving as the shell application that orchestrates multiple independent micro-frontends.
 
+## 🌐 Live Demo
+
+**[View Live Demo →](https://thieuluan.blog)**
+
+Experience the micro-frontend architecture in action with live demonstrations of Angular and Svelte components integrated seamlessly through Module Federation.
+
 ## 🏗️ Architecture Overview
 
 ```
