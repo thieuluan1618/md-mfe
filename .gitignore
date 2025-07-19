@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Micro-frontend directories (separate git repos)
+angular-mfe/
+svelte-mfe/
