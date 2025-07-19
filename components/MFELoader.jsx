@@ -10,6 +10,13 @@ export function AngularMFELoader() {
     const loadAngularMFE = async () => {
       try {
         setIsLoading(true);
+        
+        // In production, show demo mode if Module Federation is not available
+        if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_ENABLE_MODULE_FEDERATION !== 'true') {
+          setError('demo-mode');
+          return;
+        }
+        
         // Attempt to load the Angular MFE
         const response = await fetch('http://localhost:4201/remoteEntry.js');
         if (response.ok) {
@@ -39,6 +46,32 @@ export function AngularMFELoader() {
   }
 
   if (error) {
+    if (error === 'demo-mode') {
+      return (
+        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+          <div className="flex items-center mb-4">
+            <div className="w-4 h-4 bg-blue-500 rounded-full mr-3"></div>
+            <h4 className="font-semibold text-blue-700 dark:text-blue-300">Angular MFE Demo Mode</h4>
+          </div>
+          <p className="text-slate-600 dark:text-slate-400 mb-4">
+            This is a production demo showing the micro-frontend architecture. 
+            Module Federation is disabled in production builds for this demo.
+          </p>
+          <div className="border-2 border-dashed border-blue-300 dark:border-blue-600 rounded-lg p-4">
+            <div className="text-center text-slate-500">
+              <p className="mb-2">📱 Angular Component Demo</p>
+              <div className="text-sm space-y-1">
+                <p>• Standalone Angular components</p>
+                <p>• TypeScript integration</p>
+                <p>• Custom webpack configuration</p>
+                <p>• Module Federation: 🔧 Demo Mode</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    
     return (
       <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
         <div className="flex items-center">
@@ -93,6 +126,13 @@ export function SvelteMFELoader() {
     const loadSvelteMFE = async () => {
       try {
         setIsLoading(true);
+        
+        // In production, show demo mode if Module Federation is not available
+        if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_ENABLE_MODULE_FEDERATION !== 'true') {
+          setError('demo-mode');
+          return;
+        }
+        
         // Attempt to load the Svelte MFE
         const response = await fetch('http://localhost:4173/remoteEntry.js');
         if (response.ok) {
@@ -122,6 +162,32 @@ export function SvelteMFELoader() {
   }
 
   if (error) {
+    if (error === 'demo-mode') {
+      return (
+        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+          <div className="flex items-center mb-4">
+            <div className="w-4 h-4 bg-blue-500 rounded-full mr-3"></div>
+            <h4 className="font-semibold text-blue-700 dark:text-blue-300">Svelte MFE Demo Mode</h4>
+          </div>
+          <p className="text-slate-600 dark:text-slate-400 mb-4">
+            This is a production demo showing the micro-frontend architecture. 
+            Module Federation is disabled in production builds for this demo.
+          </p>
+          <div className="border-2 border-dashed border-blue-300 dark:border-blue-600 rounded-lg p-4">
+            <div className="text-center text-slate-500">
+              <p className="mb-2">⚡ Svelte Component Demo</p>
+              <div className="text-sm space-y-1">
+                <p>• Reactive Svelte components</p>
+                <p>• Vite build optimization</p>
+                <p>• TypeScript support</p>
+                <p>• Module Federation: 🔧 Demo Mode</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    
     return (
       <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-6">
         <div className="flex items-center">
