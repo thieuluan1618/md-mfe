@@ -8,7 +8,7 @@ This project demonstrates a **micro-frontend (MFE) architecture** using Module F
 ┌─────────────────────────────────────────┐
 │           Shell Application             │
 │          (Next.js 15 + React 19)       │
-│              Port: 3000                 │
+│              Port: 3001                 │
 └─────────────────┬───────────────────────┘
                   │
         ┌─────────┴─────────┐
@@ -33,7 +33,7 @@ This project demonstrates a **micro-frontend (MFE) architecture** using Module F
 npm install
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000)
+Open [http://localhost:3001](http://localhost:3001)
 
 **Terminal 2 - Angular MFE:**
 ```bash
@@ -52,7 +52,7 @@ npm run dev
 Runs on [http://localhost:4173](http://localhost:4173)
 
 ### 2. View the Integration
-Once all three applications are running, visit the shell application at [http://localhost:3000](http://localhost:3000) to see the micro-frontends integrated together.
+Once all three applications are running, visit the shell application at [http://localhost:3001](http://localhost:3001) to see the micro-frontends integrated together.
 
 ## 📁 Project Structure
 

@@ -35,7 +35,7 @@ export default function Home() {
                 </div>
                 <h3 className="font-semibold text-blue-700 dark:text-blue-300">Shell Application</h3>
                 <p className="text-sm text-slate-600 dark:text-slate-400">Next.js 15 + React 19</p>
-                <p className="text-xs text-slate-500">Port: 3000</p>
+                <p className="text-xs text-slate-500">Port: 3001</p>
               </div>
               
               <div className="text-center p-4 border rounded-lg bg-red-50 dark:bg-red-900/20">
