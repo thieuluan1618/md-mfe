@@ -41,5 +41,5 @@ yarn-error.log*
 next-env.d.ts
 
 # Micro-frontend directories (separate git repos)
-angular-mfe/
-svelte-mfe/
+angular-mfe/node_modules
+svelte-mfe/node_modules
