@@ -1,11 +1,28 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Plus, Camera, Users, DollarSign, Trash2 } from 'lucide-react';
+import { Plus, Camera, Users, DollarSign, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const TheKeoApp = () => {
-  const [bills, setBills] = useState([]);
-  const [friends, setFriends] = useState(['You', 'Friend 1', 'Friend 2']);
+  const [bills, setBills] = useState([
+    {
+      id: 1,
+      title: "TheKeo1-LyKyQuan",
+      amount: 1577,
+      amountPerPerson: 1577 / 2, // Split between You and Thanh Tran
+      payments: {
+        'You': 1577 - 300,
+        'Thanh Tran': 0 // Already paid 300k
+      },
+      paidBy: 'Thanh Tran',
+      splitBetween: ['You', 'Thanh Tran'],
+      date: new Date().toLocaleDateString(),
+      imageUrl: "/Keo1/img.png",
+      images: ["/Keo1/img.png", "/Keo1/img_1.png", "/Keo1/img_2.png"]
+    }
+  ]);
+  const [friends, setFriends] = useState(['You', 'Thanh Tran']);
+  const [currentImageIndex, setCurrentImageIndex] = useState({});
   const [showAddBill, setShowAddBill] = useState(false);
   const [newBill, setNewBill] = useState({
     title: '',
@@ -101,6 +118,20 @@ const TheKeoApp = () => {
 
   const getTotalOwed = (person) => {
     return bills.reduce((total, bill) => total + (bill.payments[person] || 0), 0);
+  };
+
+  const nextImage = (billId, totalImages) => {
+    setCurrentImageIndex(prev => ({
+      ...prev,
+      [billId]: ((prev[billId] || 0) + 1) % totalImages
+    }));
+  };
+
+  const prevImage = (billId, totalImages) => {
+    setCurrentImageIndex(prev => ({
+      ...prev,
+      [billId]: ((prev[billId] || 0) - 1 + totalImages) % totalImages
+    }));
   };
 
   return (
@@ -272,8 +303,42 @@ const TheKeoApp = () => {
               </button>
             </div>
 
-            {bill.imageUrl && (
-              <img src={bill.imageUrl} alt="Bill" className="w-full h-20 object-cover rounded-lg mb-2" />
+            {bill.images && bill.images.length > 0 && (
+              <div className="relative mb-2">
+                <img 
+                  src={bill.images[currentImageIndex[bill.id] || 0]} 
+                  alt="Bill" 
+                  className="w-full h-20 object-cover rounded-lg" 
+                />
+                {bill.images.length > 1 && (
+                  <>
+                    <button
+                      onClick={() => prevImage(bill.id, bill.images.length)}
+                      className="absolute left-1 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-1 rounded-full hover:bg-black/70 transition-colors"
+                    >
+                      <ChevronLeft className="w-3 h-3" />
+                    </button>
+                    <button
+                      onClick={() => nextImage(bill.id, bill.images.length)}
+                      className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-1 rounded-full hover:bg-black/70 transition-colors"
+                    >
+                      <ChevronRight className="w-3 h-3" />
+                    </button>
+                    <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 flex gap-1">
+                      {bill.images.map((_, index) => (
+                        <div
+                          key={index}
+                          className={`w-1.5 h-1.5 rounded-full ${
+                            index === (currentImageIndex[bill.id] || 0)
+                              ? 'bg-white'
+                              : 'bg-white/50'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
             )}
 
             <div className="mb-2">
