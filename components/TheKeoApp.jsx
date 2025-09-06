@@ -1,38 +1,39 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Plus, Camera, Users, DollarSign, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Camera, Users, DollarSign, ChevronLeft, ChevronRight, Calculator } from 'lucide-react';
 import ImageViewer from './ImageViewer';
 
 const TheKeoApp = () => {
   const [bills, setBills] = useState([
     {
       id: 1,
-      title: "TheKeo1-LyKyQuan",
+      title: "#TheKeo1-LyKyQuan",
       amount: 1577,
       amountPerPerson: 1577 / 2, // Split between You and Thanh Tran
       payments: {
-        'You': 1577 - 300,
-        'Thanh Tran': 0 // Already paid 300k
+        // 'Luân': 1577 - 300,
+        'Thanh Tran': 300 // Already paid 300k
       },
-      paidBy: 'Thanh Tran',
-      splitBetween: ['You', 'Thanh Tran'],
-      date: new Date().toLocaleDateString(),
+      paidBy: 'Thành Trần',
+      splitBetween: ['Luân', 'Thành Trần'],
+      date: new Date().toLocaleDateString('vi-VN'),
       imageUrl: "/Keo1/img.png",
       images: ["/Keo1/img.png", "/Keo1/img_1.png", "/Keo1/img_2.png"]
     }
   ]);
-  const [friends, setFriends] = useState(['You', 'Thanh Tran']);
+  const [friends, setFriends] = useState(['Luân', 'Thành Trần']);
   const [currentImageIndex, setCurrentImageIndex] = useState({});
   const [showAddBill, setShowAddBill] = useState(false);
   const [imageViewer, setImageViewer] = useState({ show: false, images: [], currentIndex: 0 });
+  const [calculator, setCalculator] = useState({ totalBill: '', numDrinkers: '' });
   const [newBill, setNewBill] = useState({
     title: '',
     amount: '',
     image: null,
     imageUrl: '',
-    paidBy: 'You',
-    splitBetween: ['You'],
+    paidBy: 'Luân',
+    splitBetween: ['Luân'],
     payments: {}
   });
 
@@ -51,12 +52,6 @@ const TheKeoApp = () => {
     }
   };
 
-  const addFriend = () => {
-    const name = prompt('Enter friend name:');
-    if (name && !friends.includes(name)) {
-      setFriends([...friends, name]);
-    }
-  };
 
   const toggleFriendInSplit = (friend) => {
     setNewBill(prev => {
@@ -68,6 +63,9 @@ const TheKeoApp = () => {
   };
 
   const addBill = () => {
+      alert('chƯa code xong, hẹ hẹ hẹ')
+      return
+
     if (!newBill.title || !newBill.amount) return;
     
     const amountPerPerson = parseFloat(newBill.amount) / newBill.splitBetween.length;
@@ -83,7 +81,7 @@ const TheKeoApp = () => {
       amount: parseFloat(newBill.amount),
       amountPerPerson,
       payments,
-      date: new Date().toLocaleDateString()
+      date: new Date().toLocaleDateString('vi-VN')
     };
 
     setBills([...bills, bill]);
@@ -92,8 +90,8 @@ const TheKeoApp = () => {
       amount: '',
       image: null,
       imageUrl: '',
-      paidBy: 'You',
-      splitBetween: ['You'],
+      paidBy: 'Luân',
+      splitBetween: ['Luân'],
       payments: {}
     });
     setShowAddBill(false);
@@ -114,9 +112,6 @@ const TheKeoApp = () => {
     }));
   };
 
-  const deleteBill = (billId) => {
-    setBills(bills.filter(bill => bill.id !== billId));
-  };
 
   const getTotalOwed = (person) => {
     return bills.reduce((total, bill) => total + (bill.payments[person] || 0), 0);
@@ -140,8 +135,18 @@ const TheKeoApp = () => {
     <div className="h-full p-6 overflow-y-auto">
       {/* Header */}
       <div className="text-center mb-6">
-        <h1 className="text-3xl font-bold text-white mb-2 font-['Poppins']">🍻 TheKeo</h1>
-        <p className="text-white/70 text-sm">Track your bills & drinks with friends!</p>
+        <h1 className="text-3xl font-bold text-white mb-2 font-['Poppins'] flex items-center justify-center">
+          <div style={{ height: 100, width: 150, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <img
+              src="/logo/logo.png"
+              alt="logo"
+              width={150}
+              style={{ height: 100, objectFit: 'cover', objectPosition: 'center' }}
+            />
+          </div>
+        </h1>
+        {/*<p className="text-white/70 text-sm">Quản lý chi tiêu và nhậu nhẹt với bạn bè!</p>*/}
+
       </div>
 
       {/* Summary Cards */}
@@ -149,45 +154,68 @@ const TheKeoApp = () => {
         <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-white border border-white/20">
           <div className="flex items-center gap-2 mb-2">
             <DollarSign className="w-4 h-4 text-[#8b5cf6]" />
-            <span className="text-xs font-medium">Total Bills</span>
+            <span className="text-xs font-medium">Tổng Bill</span>
           </div>
           <div className="text-lg font-bold">
-            ${bills.reduce((sum, bill) => sum + bill.amount, 0).toFixed(2)}
+            {bills.reduce((sum, bill) => sum + bill.amount, 0).toLocaleString()}k
           </div>
         </div>
         
         <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-white border border-white/20">
           <div className="flex items-center gap-2 mb-2">
-            <Users className="w-4 h-4 text-[#ec4899]" />
-            <span className="text-xs font-medium">You Owe</span>
+            <Calculator className="w-4 h-4 text-[#10b981]" />
+            <span className="text-xs font-medium">Chia Bill</span>
           </div>
-          <div className="text-lg font-bold text-[#ef4444]">
-            ${getTotalOwed('You').toFixed(2)}
+          <div className="space-y-1">
+            <div className="text-xs text-white/90 leading-relaxed">
+              Có{' '}
+              <input
+                type="number"
+                min="1"
+                max="10"
+                value={calculator.numDrinkers}
+                onChange={(e) => {
+                  const value = Math.max(0, Math.min(10, parseInt(e.target.value) || 0));
+                  setCalculator(prev => ({ ...prev, numDrinkers: value.toString() }));
+                }}
+                className="w-8 bg-white/20 text-white text-center text-xs p-0 border border-white/30 outline-none focus:border-[#10b981] rounded mx-1"
+              />
+              em say sỉn
+            </div>
+            {calculator.numDrinkers && calculator.numDrinkers !== '0' && (
+              <div className="text-xs text-white/90 leading-relaxed">
+                mỗi em góp{' '}
+                <span className="font-bold text-[#10b981]">
+                  {Math.round(bills.reduce((sum, bill) => sum + bill.amount, 0) / parseFloat(calculator.numDrinkers)).toLocaleString()}
+                </span> 🐟
+              </div>
+            )}
           </div>
         </div>
       </div>
 
+
       {/* Friends Management */}
-      <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-4 border border-white/20">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-white font-medium text-sm">Friends</h3>
-          <button
-            onClick={addFriend}
-            className="bg-[#8b5cf6] hover:bg-[#7c3aed] text-white p-1 rounded-lg transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-          </button>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {friends.map(friend => (
-            <div key={friend} className="bg-white/20 text-white px-2 py-1 rounded-full text-xs">
-              {friend} {getTotalOwed(friend) > 0 && (
-                <span className="text-[#f59e0b]">(-${getTotalOwed(friend).toFixed(2)})</span>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
+      {/*<div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-4 border border-white/20">*/}
+      {/*  <div className="flex items-center justify-between mb-3">*/}
+      {/*    <h3 className="text-white font-medium text-sm">Bạn Bè</h3>*/}
+      {/*    <button*/}
+      {/*      onClick={addFriend}*/}
+      {/*      className="bg-[#8b5cf6] hover:bg-[#7c3aed] text-white p-1 rounded-lg transition-colors"*/}
+      {/*    >*/}
+      {/*      <Plus className="w-4 h-4" />*/}
+      {/*    </button>*/}
+      {/*  </div>*/}
+      {/*  <div className="flex flex-wrap gap-2">*/}
+      {/*    {friends.map(friend => (*/}
+      {/*      <div key={friend} className="bg-white/20 text-white px-2 py-1 rounded-full text-xs">*/}
+      {/*        {friend} {getTotalOwed(friend) > 0 && (*/}
+      {/*          <span className="text-[#f59e0b]">(-{getTotalOwed(friend).toLocaleString()}k)</span>*/}
+      {/*        )}*/}
+      {/*      </div>*/}
+      {/*    ))}*/}
+      {/*  </div>*/}
+      {/*</div>*/}
 
       {/* Add Bill Button */}
       {!showAddBill && (
@@ -196,18 +224,18 @@ const TheKeoApp = () => {
           className="w-full bg-gradient-to-r from-[#8b5cf6] to-[#ec4899] hover:from-[#7c3aed] hover:to-[#db2777] text-white p-3 rounded-lg mb-4 flex items-center justify-center gap-2 transition-colors text-sm font-medium"
         >
           <Plus className="w-4 h-4" />
-          Add New Bill
+          Thêm Bill Mới
         </button>
       )}
 
       {/* Add Bill Form */}
       {showAddBill && (
         <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-4 border border-white/20">
-          <h3 className="text-white font-medium mb-3 text-sm">Add New Bill</h3>
+          <h3 className="text-white font-medium mb-3 text-sm">Thêm Bill Mới</h3>
           
           <input
             type="text"
-            placeholder="Bill title (e.g., Dinner at Pizza Place)"
+            placeholder="Tên bill (VD: Ăn tối quán Pizza)"
             value={newBill.title}
             onChange={(e) => setNewBill(prev => ({ ...prev, title: e.target.value }))}
             className="w-full bg-white/10 text-white placeholder-white/60 p-2 rounded-lg mb-3 border border-white/20 outline-none text-sm focus:border-[#8b5cf6]"
@@ -215,7 +243,7 @@ const TheKeoApp = () => {
           
           <input
             type="number"
-            placeholder="Total amount"
+            placeholder="Tổng tiền"
             value={newBill.amount}
             onChange={(e) => setNewBill(prev => ({ ...prev, amount: e.target.value }))}
             className="w-full bg-white/10 text-white placeholder-white/60 p-2 rounded-lg mb-3 border border-white/20 outline-none text-sm focus:border-[#8b5cf6]"
@@ -225,7 +253,7 @@ const TheKeoApp = () => {
           <div className="mb-3">
             <label className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white p-2 rounded-lg cursor-pointer transition-colors border border-white/20 text-sm">
               <Camera className="w-4 h-4" />
-              {newBill.image ? 'Change Photo' : 'Add Photo'}
+              {newBill.image ? 'Đổi Ảnh' : 'Thêm Ảnh'}
               <input
                 type="file"
                 accept="image/*"
@@ -246,14 +274,14 @@ const TheKeoApp = () => {
           >
             {friends.map(friend => (
               <option key={friend} value={friend} className="bg-[#0f0f23] text-white">
-                {friend} paid
+                {friend} đã trả
               </option>
             ))}
           </select>
 
           {/* Split Between */}
           <div className="mb-4">
-            <p className="text-white/70 text-xs mb-2">Split between:</p>
+            <p className="text-white/70 text-xs mb-2">Chia cho:</p>
             <div className="flex flex-wrap gap-2">
               {friends.map(friend => (
                 <button
@@ -276,13 +304,13 @@ const TheKeoApp = () => {
               onClick={addBill}
               className="flex-1 bg-[#10b981] text-white font-medium p-2 rounded-lg hover:bg-[#059669] transition-colors text-sm"
             >
-              Add Bill
+              Thêm Bill
             </button>
             <button
               onClick={() => setShowAddBill(false)}
               className="px-4 bg-white/20 text-white p-2 rounded-lg hover:bg-white/30 transition-colors text-sm"
             >
-              Cancel
+              Hủy
             </button>
           </div>
         </div>
@@ -292,17 +320,9 @@ const TheKeoApp = () => {
       <div className="space-y-3 max-h-96 overflow-y-auto">
         {bills.map(bill => (
           <div key={bill.id} className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-            <div className="flex justify-between items-start mb-2">
-              <div>
-                <h4 className="text-white font-medium text-sm">{bill.title}</h4>
-                <p className="text-white/60 text-xs">{bill.date}</p>
-              </div>
-              <button
-                onClick={() => deleteBill(bill.id)}
-                className="text-white/60 hover:text-[#ef4444] transition-colors"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+            <div className="mb-2">
+              <h4 className="text-white font-medium text-sm">{bill.title}</h4>
+              <p className="text-white/60 text-xs">{bill.date}</p>
             </div>
 
             {bill.images && bill.images.length > 0 && (
@@ -350,31 +370,35 @@ const TheKeoApp = () => {
 
             <div className="mb-2">
               <div className="flex justify-between text-white text-xs mb-1">
-                <span>Total: ${bill.amount.toFixed(2)}</span>
-                <span>Per person: ${bill.amountPerPerson.toFixed(2)}</span>
+                <span>Tổng: {bill.amount.toLocaleString()}k</span>
+
+                  {/*<span>Mỗi người: {bill.amountPerPerson.toLocaleString()}k</span>*/}
               </div>
-              <p className="text-white/60 text-xs">Paid by: {bill.paidBy}</p>
+              {/*<p className="text-white/60 text-xs">Đã trả: {bill.paidBy}</p>*/}
             </div>
 
             {/* Payment Status */}
             <div className="space-y-1">
-              <p className="text-white/80 text-xs font-medium">Who owes what:</p>
+              <p className="text-white/80 text-xs font-medium">Các nhà hảo tâm:</p>
               {Object.entries(bill.payments).map(([person, amount]) => (
                 <div key={person} className="flex items-center justify-between">
                   <span className="text-white text-xs">{person}</span>
-                  {amount > 0 ? (
-                    <div className="flex items-center gap-2">
-                      <span className="text-[#f59e0b] text-xs">Owes: ${amount.toFixed(2)}</span>
-                      <input
-                        type="number"
-                        placeholder="Paid"
-                        className="w-12 bg-white/10 text-white text-xs p-1 rounded border border-white/20 outline-none focus:border-[#8b5cf6]"
-                        onBlur={(e) => updatePayment(bill.id, person, e.target.value)}
-                      />
+                    <div className="flex items-center">
+                        <span className="text-[#f59e0b] text-xs">+{amount.toLocaleString()}k</span>
                     </div>
-                  ) : (
-                    <span className="text-[#10b981] text-xs">✓ Settled</span>
-                  )}
+                  {/*{amount > 0 ? (*/}
+                  {/*  <div className="flex items-center gap-2">*/}
+                  {/*    <span className="text-[#f59e0b] text-xs">Nợ: {amount.toLocaleString()}k</span>*/}
+                  {/*    <input*/}
+                  {/*      type="number"*/}
+                  {/*      placeholder="Đã trả"*/}
+                  {/*      className="w-12 bg-white/10 text-white text-xs p-1 rounded border border-white/20 outline-none focus:border-[#8b5cf6]"*/}
+                  {/*      onBlur={(e) => updatePayment(bill.id, person, e.target.value)}*/}
+                  {/*    />*/}
+                  {/*  </div>*/}
+                  {/*) : (*/}
+                  {/*  <span className="text-[#10b981] text-xs">✓ Xong rồi</span>*/}
+                  {/*)}*/}
                 </div>
               ))}
             </div>
@@ -385,7 +409,7 @@ const TheKeoApp = () => {
       {bills.length === 0 && (
         <div className="text-center text-white/60 py-8">
           <div className="text-3xl mb-2">🍺</div>
-          <p className="text-sm">No bills yet! Add your first one above.</p>
+          <p className="text-sm">Chưa có bill nào! Thêm cái đầu tiên đi nào.</p>
         </div>
       )}
 
