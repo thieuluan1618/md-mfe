@@ -257,3 +257,14 @@ Visit http://localhost:6006 to view component stories.
 - Use shared design tokens and styling conventions
 - Coordinate on shared dependencies to avoid version conflicts
 - Test integration points between shell and remotes
+
+## Live Demo
+- **Production Demo**: https://thieuluan.blog
+- Experience the micro-frontend architecture with live demonstrations of integrated Angular and Svelte components
+
+## Quick Start Verification
+To quickly verify the setup is working:
+1. Start all three applications as described above
+2. Visit http://localhost:3001 to see the shell application
+3. Check that both Angular (port 4201) and Svelte (port 4173) MFEs are accessible independently
+4. Verify Module Federation integration in the shell application
