@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Plus, Camera, Users, DollarSign, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
+import ImageViewer from './ImageViewer';
 
 const TheKeoApp = () => {
   const [bills, setBills] = useState([
@@ -24,6 +25,7 @@ const TheKeoApp = () => {
   const [friends, setFriends] = useState(['You', 'Thanh Tran']);
   const [currentImageIndex, setCurrentImageIndex] = useState({});
   const [showAddBill, setShowAddBill] = useState(false);
+  const [imageViewer, setImageViewer] = useState({ show: false, images: [], currentIndex: 0 });
   const [newBill, setNewBill] = useState({
     title: '',
     amount: '',
@@ -308,7 +310,12 @@ const TheKeoApp = () => {
                 <img 
                   src={bill.images[currentImageIndex[bill.id] || 0]} 
                   alt="Bill" 
-                  className="w-full h-20 object-cover rounded-lg" 
+                  className="w-full h-20 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity" 
+                  onClick={() => setImageViewer({ 
+                    show: true, 
+                    images: bill.images, 
+                    currentIndex: currentImageIndex[bill.id] || 0 
+                  })}
                 />
                 {bill.images.length > 1 && (
                   <>
@@ -380,6 +387,16 @@ const TheKeoApp = () => {
           <div className="text-3xl mb-2">🍺</div>
           <p className="text-sm">No bills yet! Add your first one above.</p>
         </div>
+      )}
+
+      {/* Image Viewer Modal */}
+      {imageViewer.show && (
+        <ImageViewer
+          images={imageViewer.images}
+          currentIndex={imageViewer.currentIndex}
+          onClose={() => setImageViewer({ show: false, images: [], currentIndex: 0 })}
+          onIndexChange={(index) => setImageViewer(prev => ({ ...prev, currentIndex: index }))}
+        />
       )}
     </div>
   );
