@@ -268,3 +268,9 @@ To quickly verify the setup is working:
 2. Visit http://localhost:3001 to see the shell application
 3. Check that both Angular (port 4201) and Svelte (port 4173) MFEs are accessible independently
 4. Verify Module Federation integration in the shell application
+
+## Project Context
+- **Target Audience**: Fun project designed for small groups of friends
+- **Language Context**: Vietnamese language context and user base
+- **Social Focus**: Emphasizes friend-to-friend interactions and shared experiences
+- **Cultural Note**: Built with Vietnamese users in mind for social bill-sharing scenarios

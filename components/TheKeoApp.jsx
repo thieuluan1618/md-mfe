@@ -104,7 +104,7 @@ const TheKeoApp = () => {
   };
 
   return (
-    <div className="h-full bg-[#0f0f23] p-6 overflow-y-auto">
+    <div className="h-full p-6 overflow-y-auto">
       {/* Header */}
       <div className="text-center mb-6">
         <h1 className="text-3xl font-bold text-white mb-2 font-['Poppins']">🍻 TheKeo</h1>

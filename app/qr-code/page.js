@@ -4,10 +4,10 @@ export default function QRCodePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0f0f23] via-purple-900 to-pink-900 py-8 px-4">
       <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Left Column - QR Code */}
-          <div className="max-w-md mx-auto">
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 text-center border border-white/20">
+        <div className="grid grid-cols-12 gap-8">
+          {/* Left Column - QR Code (4 cols on lg, 12 on mobile) */}
+          <div className="col-span-12 lg:col-span-4">
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 text-center border border-white/20 max-w-md mx-auto lg:max-w-none">
               <h1 className="text-2xl font-bold text-white mb-2 font-['Poppins']">
                 Bank Transfer
               </h1>
@@ -40,16 +40,11 @@ export default function QRCodePage() {
                 </div>
               </div>
 
-              <div className="mt-8 pt-6 border-t border-white/20">
-                <p className="text-xs text-white/50">
-                  💡 Tip: Take a screenshot to share this QRcode easily
-                </p>
-              </div>
             </div>
           </div>
 
-          {/* Right Column - TheKeo App */}
-          <div className="max-w-md mx-auto lg:max-w-none">
+          {/* Right Column - TheKeo App (8 cols on lg, 12 on mobile) */}
+          <div className="col-span-12 lg:col-span-8">
             <div className="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 h-[800px]">
               <TheKeoApp />
             </div>
