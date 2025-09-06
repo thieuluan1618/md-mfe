@@ -1,35 +1,57 @@
-export default function QRCodePage() {
+import TheKeoApp from "@/components/TheKeoApp";
 
+export default function QRCodePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
-      <div className="max-w-md mx-auto">
-        <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
-          <p className="text-gray-600 mb-8">
-            Scan the QRcode to send money
-          </p>
-          
-          <div className="bg-gray-50 rounded-xl p-6 mb-6">
-            <div className="w-64 h-64 bg-white rounded-lg mx-auto flex items-center justify-center">
-              <img 
-                src="/QRCode.svg"
-                alt="Bank QRcode" 
-                className="w-full h-full object-contain rounded-lg"
-              />
+    <div className="min-h-screen bg-gradient-to-br from-[#0f0f23] via-purple-900 to-pink-900 py-8 px-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Left Column - QR Code */}
+          <div className="max-w-md mx-auto">
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 text-center border border-white/20">
+              <h1 className="text-2xl font-bold text-white mb-2 font-['Poppins']">
+                Bank Transfer
+              </h1>
+              <p className="text-white/70 mb-8">
+                Scan the QRcode to send money
+              </p>
+              
+              <div className="bg-white/5 rounded-xl p-6 mb-6 border border-white/20">
+                <div className="w-64 h-64 bg-white rounded-lg mx-auto flex items-center justify-center">
+                  <img 
+                    src="/QRCode.svg"
+                    alt="Bank QRcode" 
+                    className="w-full h-full object-contain rounded-lg"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-3 text-sm text-white/90 bg-white/5 rounded-lg p-4 border border-white/20">
+                <div className="flex justify-between">
+                  <span className="text-white/70">Bank:</span>
+                  <span className="font-medium text-[#8b5cf6]">Cake</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-white/70">Account:</span>
+                  <span className="font-medium text-[#ec4899]">0333649559</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-white/70">Name:</span>
+                  <span className="font-medium text-white">Nguyen Thieu Luan</span>
+                </div>
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-white/20">
+                <p className="text-xs text-white/50">
+                  💡 Tip: Take a screenshot to share this QRcode easily
+                </p>
+              </div>
             </div>
           </div>
 
-          <div className="space-y-3 text-sm text-gray-600">
-            <div className="flex justify-between">
-              <span>Bank:</span>
-              <span className="font-medium">Cake</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Account:</span>
-              <span className="font-medium">0333649559</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Name:</span>
-              <span className="font-medium">Nguyen Thieu Luan</span>
+          {/* Right Column - TheKeo App */}
+          <div className="max-w-md mx-auto lg:max-w-none">
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 h-[800px]">
+              <TheKeoApp />
             </div>
           </div>
         </div>
