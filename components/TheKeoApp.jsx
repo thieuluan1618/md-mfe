@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Camera, Users, DollarSign, ChevronLeft, ChevronRight, Calculator } from 'lucide-react';
 import ImageViewer from './ImageViewer';
 
@@ -36,6 +36,24 @@ const TheKeoApp = () => {
     splitBetween: ['Luân'],
     payments: {}
   });
+  const [transactions, setTransactions] = useState([]);
+
+  const fetchPaymentsFromAPI = async () => {
+    try {
+      const response = await fetch('https://go-transaction-api-wqzlk.sevalla.app/api/v1/transactions');
+      const data = await response.json();
+      
+      if (data && data.transactions && Array.isArray(data.transactions)) {
+        setTransactions(data.transactions);
+      }
+    } catch (error) {
+      console.error('Error fetching payments:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPaymentsFromAPI();
+  }, []);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -379,28 +397,28 @@ const TheKeoApp = () => {
 
             {/* Payment Status */}
             <div className="space-y-1">
-              <p className="text-white/80 text-xs font-medium">Các nhà hảo tâm:</p>
-              {Object.entries(bill.payments).map(([person, amount]) => (
-                <div key={person} className="flex items-center justify-between">
-                  <span className="text-white text-xs">{person}</span>
-                    <div className="flex items-center">
-                        <span className="text-[#f59e0b] text-xs">+{amount.toLocaleString()}k</span>
-                    </div>
-                  {/*{amount > 0 ? (*/}
-                  {/*  <div className="flex items-center gap-2">*/}
-                  {/*    <span className="text-[#f59e0b] text-xs">Nợ: {amount.toLocaleString()}k</span>*/}
-                  {/*    <input*/}
-                  {/*      type="number"*/}
-                  {/*      placeholder="Đã trả"*/}
-                  {/*      className="w-12 bg-white/10 text-white text-xs p-1 rounded border border-white/20 outline-none focus:border-[#8b5cf6]"*/}
-                  {/*      onBlur={(e) => updatePayment(bill.id, person, e.target.value)}*/}
-                  {/*    />*/}
-                  {/*  </div>*/}
-                  {/*) : (*/}
-                  {/*  <span className="text-[#10b981] text-xs">✓ Xong rồi</span>*/}
-                  {/*)}*/}
-                </div>
-              ))}
+              {/*<p className="text-white/80 text-xs font-medium">Các nhà hảo tâm:</p>*/}
+              {/*{Object.entries(bill.payments).map(([person, amount]) => (*/}
+              {/*  <div key={person} className="flex items-center justify-between">*/}
+              {/*    <span className="text-white text-xs">{person}</span>*/}
+              {/*      <div className="flex items-center">*/}
+              {/*          <span className="text-[#f59e0b] text-xs">+{amount.toLocaleString()}k</span>*/}
+              {/*      </div>*/}
+              {/*    /!*{amount > 0 ? (*!/*/}
+              {/*    /!*  <div className="flex items-center gap-2">*!/*/}
+              {/*    /!*    <span className="text-[#f59e0b] text-xs">Nợ: {amount.toLocaleString()}k</span>*!/*/}
+              {/*    /!*    <input*!/*/}
+              {/*    /!*      type="number"*!/*/}
+              {/*    /!*      placeholder="Đã trả"*!/*/}
+              {/*    /!*      className="w-12 bg-white/10 text-white text-xs p-1 rounded border border-white/20 outline-none focus:border-[#8b5cf6]"*!/*/}
+              {/*    /!*      onBlur={(e) => updatePayment(bill.id, person, e.target.value)}*!/*/}
+              {/*    /!*    />*!/*/}
+              {/*    /!*  </div>*!/*/}
+              {/*    /!*) : (*!/*/}
+              {/*    /!*  <span className="text-[#10b981] text-xs">✓ Xong rồi</span>*!/*/}
+              {/*    /!*)}*!/*/}
+              {/*  </div>*/}
+              {/*))}*/}
             </div>
           </div>
         ))}
@@ -410,6 +428,26 @@ const TheKeoApp = () => {
         <div className="text-center text-white/60 py-8">
           <div className="text-3xl mb-2">🍺</div>
           <p className="text-sm">Chưa có bill nào! Thêm cái đầu tiên đi nào.</p>
+        </div>
+      )}
+
+      {/* Transactions Section */}
+      {transactions.length > 0 && (
+        <div className="mt-6">
+          <h3 className="text-white font-medium mb-3 text-sm">Các nhà hảo tâm </h3>
+          <div className="space-y-2 max-h-64 overflow-y-auto">
+            {transactions.map(transaction => (
+              <div key={transaction.ID} className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+                <div className="flex justify-between items-start mb-1">
+                  <span className="text-[#10b981] font-medium text-sm">{transaction.AmountRaw}</span>
+                  <span className="text-white/60 text-xs">
+                    {new Date(transaction.TransactionDate).toLocaleDateString('vi-VN')}
+                  </span>
+                </div>
+                <p className="text-white text-xs leading-relaxed">{transaction.Description}</p>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
