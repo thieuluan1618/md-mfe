@@ -23,10 +23,10 @@ export default function QRCodePage() {
       </button>
 
       <div className="max-w-7xl mx-auto">
-        <div className={` ${showTheKeoApp ? 'grid grid-cols-12 gap-8':'flex justify-center'}`}>
+        <div className={` ${showTheKeoApp ? 'grid grid-cols-12 gap-8':''}`}>
           {/* Left Column - QR Code (4 cols on lg, 12 on mobile) */}
           <div className={`${showTheKeoApp ? 'col-span-12 lg:col-span-4' : ''} transition-all duration-300`}>
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 text-center border border-white/20 mx-auto max-w-xl lg:max-w-none">
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 text-center border border-white/20 mx-auto lg:max-w-xl sm:max-w-none">
               <h1 className="text-2xl font-bold text-white mb-2 font-['Poppins']">
                 Bank 🤤
               </h1>
