@@ -3,9 +3,8 @@
 import { useState, useEffect } from "react";
 import TheKeoApp from "@/components/TheKeoApp";
 import { PanelRightOpen, PanelRightClose, Copy, Check } from "lucide-react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSun } from "@fortawesome/free-regular-svg-icons";
 import Rain from "react-rain-animation";
+import Sunbeam from "@/components/Sunbeam";
 import "react-rain-animation/lib/style.css";
 
 export default function QRCodePage() {
@@ -91,19 +90,8 @@ export default function QRCodePage() {
       {/* Weather Effect */}
       {!loading && shouldShowRain() && <Rain numDrops={100} />}
 
-      {/* Sun Effect - FontAwesome sun icon with glow when sunny */}
-      {!loading && !shouldShowRain() && weather && (
-        <div className="fixed top-10 right-10 pointer-events-none z-0">
-          <div className="relative">
-            <FontAwesomeIcon
-              icon={faSun}
-              className="w-20 h-20 text-yellow-300 animate-pulse"
-              style={{ width: '5rem', height: '5rem' }}
-            />
-            <div className="absolute inset-0 w-20 h-20 bg-yellow-300/20 rounded-full blur-xl animate-pulse" />
-          </div>
-        </div>
-      )}
+      {/* Sunbeam Effect - Animated sunbeams when sunny */}
+      {!loading && !shouldShowRain() && weather && <Sunbeam />}
 
       {/* Toggle Button */}
       <button
