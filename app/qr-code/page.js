@@ -3,6 +3,8 @@
 import { useState } from "react";
 import TheKeoApp from "@/components/TheKeoApp";
 import { PanelRightOpen, PanelRightClose, Copy, Check } from "lucide-react";
+import Rain from "react-rain-animation";
+import "react-rain-animation/lib/style.css";
 
 export default function QRCodePage() {
   const [showTheKeoApp, setShowTheKeoApp] = useState(false);
@@ -19,7 +21,10 @@ export default function QRCodePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0f0f23] via-purple-900 to-pink-900 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#0f0f23] via-purple-900 to-pink-900 py-8 px-4 relative overflow-hidden">
+      {/* Rain Effect */}
+      <Rain numDrops={100} />
+
       {/* Toggle Button */}
       <button
         onClick={() => setShowTheKeoApp(!showTheKeoApp)}

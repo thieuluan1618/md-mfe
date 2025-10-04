@@ -382,9 +382,18 @@ const TheKeoApp = () => {
                     images: bill.images,
                     currentIndex: currentImageIndex[bill.id] || 0
                   })}
-                  onLoadStart={() => setImageLoading(prev => ({ ...prev, [`${bill.id}-${currentImageIndex[bill.id] || 0}`]: true }))}
-                  onLoad={() => setImageLoading(prev => ({ ...prev, [`${bill.id}-${currentImageIndex[bill.id] || 0}`]: false }))}
-                  onError={() => setImageLoading(prev => ({ ...prev, [`${bill.id}-${currentImageIndex[bill.id] || 0}`]: false }))}
+                  onLoadStart={() => {
+                    const key = `${bill.id}-${currentImageIndex[bill.id] || 0}`;
+                    setImageLoading(prev => ({ ...prev, [key]: true }));
+                  }}
+                  onLoad={() => {
+                    const key = `${bill.id}-${currentImageIndex[bill.id] || 0}`;
+                    setImageLoading(prev => ({ ...prev, [key]: false }));
+                  }}
+                  onError={() => {
+                    const key = `${bill.id}-${currentImageIndex[bill.id] || 0}`;
+                    setImageLoading(prev => ({ ...prev, [key]: false }));
+                  }}
                 />
                 {bill.images.length > 1 && (
                   <>
