@@ -2,10 +2,21 @@
 
 import { useState } from "react";
 import TheKeoApp from "@/components/TheKeoApp";
-import { PanelRightOpen, PanelRightClose } from "lucide-react";
+import { PanelRightOpen, PanelRightClose, Copy, Check } from "lucide-react";
 
 export default function QRCodePage() {
   const [showTheKeoApp, setShowTheKeoApp] = useState(false);
+  const [copiedField, setCopiedField] = useState(null);
+
+  const copyToClipboard = async (text, field) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedField(field);
+      setTimeout(() => setCopiedField(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0f0f23] via-purple-900 to-pink-900 py-8 px-4">
@@ -42,17 +53,47 @@ export default function QRCodePage() {
               </div>
 
               <div className="space-y-3 text-sm text-white/90 bg-white/5 rounded-lg p-4 border border-white/20">
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
                   <span className="text-white/70">Ngân hàng:</span>
-                  <span className="font-medium text-[#8b5cf6]">Cake</span>
+                  <button
+                    onClick={() => copyToClipboard('Cake', 'bank')}
+                    className="flex items-center gap-2 font-medium text-[#8b5cf6] hover:text-[#7c3aed] transition-colors cursor-pointer group"
+                  >
+                    <span>Cake</span>
+                    {copiedField === 'bank' ? (
+                      <Check className="w-4 h-4 text-green-400" />
+                    ) : (
+                      <Copy className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    )}
+                  </button>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
                   <span className="text-white/70">Số tài khoản:</span>
-                  <span className="font-medium text-[#ec4899]">0333649559</span>
+                  <button
+                    onClick={() => copyToClipboard('0333649559', 'account')}
+                    className="flex items-center gap-2 font-medium text-[#ec4899] hover:text-[#db2777] transition-colors cursor-pointer group"
+                  >
+                    <span>0333649559</span>
+                    {copiedField === 'account' ? (
+                      <Check className="w-4 h-4 text-green-400" />
+                    ) : (
+                      <Copy className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    )}
+                  </button>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
                   <span className="text-white/70">Tên:</span>
-                  <span className="font-medium text-white">Nguyen Thieu Luan</span>
+                  <button
+                    onClick={() => copyToClipboard('Nguyen Thieu Luan', 'name')}
+                    className="flex items-center gap-2 font-medium text-white hover:text-white/80 transition-colors cursor-pointer group"
+                  >
+                    <span>Nguyen Thieu Luan</span>
+                    {copiedField === 'name' ? (
+                      <Check className="w-4 h-4 text-green-400" />
+                    ) : (
+                      <Copy className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    )}
+                  </button>
                 </div>
               </div>
 
