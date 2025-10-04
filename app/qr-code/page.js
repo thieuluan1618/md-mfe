@@ -13,8 +13,7 @@ export default function QRCodePage() {
   const [copiedField, setCopiedField] = useState(null);
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [debugWeather, setDebugWeather] = useState(null); // For dev mode override
-  const isDev = process.env.NODE_ENV === 'development';
+  const [weatherOverride, setWeatherOverride] = useState(null);
 
   useEffect(() => {
     // Get user location and fetch weather
@@ -81,8 +80,8 @@ export default function QRCodePage() {
   // Determine weather conditions based on weather code
   // Weather codes from Open-Meteo: https://open-meteo.com/en/docs
   const getWeatherCondition = () => {
-    // Debug mode override
-    if (isDev && debugWeather) return debugWeather;
+    // User override takes priority
+    if (weatherOverride) return weatherOverride;
 
     if (!weather) return null;
     const code = weather.weathercode;
@@ -197,50 +196,51 @@ export default function QRCodePage() {
         </div>
       </div>
 
-      {/* Dev Mode Weather Toggle */}
-      {isDev && (
-        <div className="fixed bottom-4 right-4 z-50 bg-black/80 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-          <div className="text-white text-xs mb-2 font-semibold">Weather Debug</div>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setDebugWeather('sun')}
-              className={`px-3 py-2 rounded text-xs font-medium transition-all ${
-                debugWeather === 'sun'
-                  ? 'bg-yellow-500 text-black'
-                  : 'bg-white/10 text-white hover:bg-white/20'
-              }`}
-            >
-              ☀️ Sun
-            </button>
-            <button
-              onClick={() => setDebugWeather('rain')}
-              className={`px-3 py-2 rounded text-xs font-medium transition-all ${
-                debugWeather === 'rain'
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-white/10 text-white hover:bg-white/20'
-              }`}
-            >
-              🌧️ Rain
-            </button>
-            <button
-              onClick={() => setDebugWeather('night')}
-              className={`px-3 py-2 rounded text-xs font-medium transition-all ${
-                debugWeather === 'night'
-                  ? 'bg-purple-500 text-white'
-                  : 'bg-white/10 text-white hover:bg-white/20'
-              }`}
-            >
-              🌙 Night
-            </button>
-            <button
-              onClick={() => setDebugWeather(null)}
-              className="px-3 py-2 rounded text-xs font-medium bg-white/10 text-white hover:bg-white/20 transition-all"
-            >
-              ↻ Reset
-            </button>
-          </div>
+      {/* Weather Theme Toggle */}
+      <div className="fixed bottom-4 right-4 z-50 bg-white/10 backdrop-blur-lg rounded-lg p-2 border border-white/20 shadow-lg">
+        <div className="flex gap-2">
+          {/* <button
+            onClick={() => setWeatherOverride(null)}
+            className={`p-2 rounded-lg text-xl transition-all ${
+              !weatherOverride
+                ? 'bg-white/30 shadow-lg scale-110'
+                : 'bg-white/10 hover:bg-white/20'
+            }`}
+          >
+            🌍
+          </button> */}
+          <button
+            onClick={() => setWeatherOverride('sun')}
+            className={`p-2 rounded-lg text-xl transition-all ${
+              weatherOverride === 'sun'
+                ? 'bg-yellow-500/80 shadow-lg scale-110'
+                : 'bg-white/10 hover:bg-white/20'
+            }`}
+          >
+            ☀️
+          </button>
+          <button
+            onClick={() => setWeatherOverride('rain')}
+            className={`p-2 rounded-lg text-xl transition-all ${
+              weatherOverride === 'rain'
+                ? 'bg-blue-500/80 shadow-lg scale-110'
+                : 'bg-white/10 hover:bg-white/20'
+            }`}
+          >
+            🌧️
+          </button>
+          <button
+            onClick={() => setWeatherOverride('night')}
+            className={`p-2 rounded-lg text-xl transition-all ${
+              weatherOverride === 'night'
+                ? 'bg-purple-500/80 shadow-lg scale-110'
+                : 'bg-white/10 hover:bg-white/20'
+            }`}
+          >
+            🌙
+          </button>
         </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -14,14 +14,14 @@ const MoonNight = () => {
 
       {/* Twinkling stars */}
       <div
-        className="absolute top-0 bottom-0 animate-move-bg"
+        className="absolute top-0 bottom-0"
         style={{
           width: '10000px',
           right: 0,
           background: 'transparent url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/twinkling.png) repeat',
           backgroundSize: '1000px 1000px',
           zIndex: 2,
-          animation: 'move-background 70s linear infinite'
+          animation: 'move-background 50s linear infinite'
         }}
       />
 
@@ -34,7 +34,7 @@ const MoonNight = () => {
           background: 'transparent url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/clouds_repeat.png) repeat',
           backgroundSize: '1000px 1000px',
           zIndex: 3,
-          animation: 'move-background 150s linear infinite'
+          animation: 'move-background 140s linear infinite'
         }}
       />
 
@@ -44,8 +44,8 @@ const MoonNight = () => {
         alt="Moon"
         className="absolute"
         style={{
-          height: '70vh',
-          width: '70vh',
+          height: '35vh',
+          width: 'auto',
           right: '20px',
           top: '10px',
           zIndex: 3
