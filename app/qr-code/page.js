@@ -1,14 +1,70 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TheKeoApp from "@/components/TheKeoApp";
 import { PanelRightOpen, PanelRightClose, Copy, Check } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSun } from "@fortawesome/free-regular-svg-icons";
 import Rain from "react-rain-animation";
 import "react-rain-animation/lib/style.css";
 
 export default function QRCodePage() {
   const [showTheKeoApp, setShowTheKeoApp] = useState(false);
   const [copiedField, setCopiedField] = useState(null);
+  const [weather, setWeather] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Get user location and fetch weather
+    const fetchWeather = async (latitude, longitude) => {
+      try {
+        // Using Open-Meteo API (free, no API key needed)
+        const response = await fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`
+        );
+        const data = await response.json();
+
+        if (data.current_weather) {
+          setWeather(data.current_weather);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error('Failed to fetch weather:', error);
+        setLoading(false);
+      }
+    };
+
+    // Request user location
+    const getUserLocation = () => {
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          // Success callback
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            fetchWeather(latitude, longitude);
+          },
+          // Error callback - fallback to Ho Chi Minh City
+          (error) => {
+            console.log('Location permission denied or error, using HCM as fallback:', error.message);
+            // Coordinates for Ho Chi Minh City: 10.8231° N, 106.6297° E
+            fetchWeather(10.8231, 106.6297);
+          },
+          // Options
+          {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+          }
+        );
+      } else {
+        // Geolocation not supported, fallback to Ho Chi Minh City
+        console.log('Geolocation not supported, using HCM as fallback');
+        fetchWeather(10.8231, 106.6297);
+      }
+    };
+
+    getUserLocation();
+  }, []);
 
   const copyToClipboard = async (text, field) => {
     try {
@@ -20,10 +76,34 @@ export default function QRCodePage() {
     }
   };
 
+  // Determine if it should rain based on weather code
+  // Weather codes from Open-Meteo: https://open-meteo.com/en/docs
+  const shouldShowRain = () => {
+    if (!weather) return false;
+    const code = weather.weathercode;
+    // Rain codes: 51,53,55,56,57,61,63,65,66,67,80,81,82,95,96,99
+    const rainCodes = [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99];
+    return rainCodes.includes(code);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0f0f23] via-purple-900 to-pink-900 py-8 px-4 relative overflow-hidden">
-      {/* Rain Effect */}
-      <Rain numDrops={100} />
+      {/* Weather Effect */}
+      {!loading && shouldShowRain() && <Rain numDrops={100} />}
+
+      {/* Sun Effect - FontAwesome sun icon with glow when sunny */}
+      {!loading && !shouldShowRain() && weather && (
+        <div className="fixed top-10 right-10 pointer-events-none z-0">
+          <div className="relative">
+            <FontAwesomeIcon
+              icon={faSun}
+              className="w-20 h-20 text-yellow-300 animate-pulse"
+              style={{ width: '5rem', height: '5rem' }}
+            />
+            <div className="absolute inset-0 w-20 h-20 bg-yellow-300/20 rounded-full blur-xl animate-pulse" />
+          </div>
+        </div>
+      )}
 
       {/* Toggle Button */}
       <button
