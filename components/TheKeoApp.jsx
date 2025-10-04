@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Camera, Users, DollarSign, ChevronLeft, ChevronRight, Calculator } from 'lucide-react';
 import ImageViewer from './ImageViewer';
+import PerfectScrollbar from 'perfect-scrollbar';
+import 'perfect-scrollbar/css/perfect-scrollbar.css';
 
 const TheKeoApp = () => {
   const [bills, setBills] = useState([
@@ -37,6 +39,7 @@ const TheKeoApp = () => {
     payments: {}
   });
   const [transactions, setTransactions] = useState([]);
+  const scrollContainerRef = useRef(null);
 
   const fetchPaymentsFromAPI = async () => {
     try {
@@ -54,6 +57,21 @@ const TheKeoApp = () => {
   useEffect(() => {
     fetchPaymentsFromAPI();
   }, []);
+
+  useEffect(() => {
+    if (scrollContainerRef.current && transactions.length > 0) {
+      const ps = new PerfectScrollbar(scrollContainerRef.current, {
+        wheelSpeed: 1,
+        wheelPropagation: true,
+        minScrollbarLength: 20,
+        suppressScrollX: true
+      });
+
+      return () => {
+        ps.destroy();
+      };
+    }
+  }, [transactions]);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -433,11 +451,14 @@ const TheKeoApp = () => {
 
       {/* Transactions Section */}
       {transactions.length > 0 && (
-        <div className="mt-6">
+        <div className="mt-6 transition-opacity duration-700 animate-in fade-in">
           <h3 className="text-white font-medium mb-3 text-sm">Các nhà hảo tâm </h3>
-          <div className="space-y-2 max-h-64 overflow-y-auto">
-            {transactions.map(transaction => (
-              <div key={transaction.ID} className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+          <div ref={scrollContainerRef} className="space-y-2 max-h-64 overflow-hidden relative">
+            {transactions.map((transaction) => (
+              <div
+                key={transaction.ID}
+                className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20"
+              >
                 <div className="flex justify-between items-start mb-1">
                   <span className="text-[#10b981] font-medium text-sm">{transaction.AmountRaw}</span>
                   <span className="text-white/60 text-xs">
