@@ -5,6 +5,7 @@ import TheKeoApp from "@/components/TheKeoApp";
 import { PanelRightOpen, PanelRightClose, Copy, Check } from "lucide-react";
 import Rain from "react-rain-animation";
 import Sunbeam from "@/components/Sunbeam";
+import MoonNight from "@/components/MoonNight";
 import "react-rain-animation/lib/style.css";
 
 export default function QRCodePage() {
@@ -12,6 +13,8 @@ export default function QRCodePage() {
   const [copiedField, setCopiedField] = useState(null);
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [debugWeather, setDebugWeather] = useState(null); // For dev mode override
+  const isDev = process.env.NODE_ENV === 'development';
 
   useEffect(() => {
     // Get user location and fetch weather
@@ -75,23 +78,33 @@ export default function QRCodePage() {
     }
   };
 
-  // Determine if it should rain based on weather code
+  // Determine weather conditions based on weather code
   // Weather codes from Open-Meteo: https://open-meteo.com/en/docs
-  const shouldShowRain = () => {
-    if (!weather) return false;
+  const getWeatherCondition = () => {
+    // Debug mode override
+    if (isDev && debugWeather) return debugWeather;
+
+    if (!weather) return null;
     const code = weather.weathercode;
+
     // Rain codes: 51,53,55,56,57,61,63,65,66,67,80,81,82,95,96,99
     const rainCodes = [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99];
-    return rainCodes.includes(code);
+    if (rainCodes.includes(code)) return 'rain';
+
+    // Cloudy/Night codes: 2,3,45,48 (cloudy, fog)
+    const cloudyCodes = [2, 3, 45, 48];
+    if (cloudyCodes.includes(code)) return 'night';
+
+    // Clear/Sunny: 0,1 (clear sky, mainly clear)
+    return 'sun';
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0f0f23] via-purple-900 to-pink-900 py-8 px-4 relative overflow-hidden">
-      {/* Weather Effect */}
-      {!loading && shouldShowRain() && <Rain numDrops={100} />}
-
-      {/* Sunbeam Effect - Animated sunbeams when sunny */}
-      {!loading && !shouldShowRain() && weather && <Sunbeam />}
+      {/* Weather Effects */}
+      {!loading && getWeatherCondition() === 'rain' && <Rain numDrops={100} />}
+      {!loading && getWeatherCondition() === 'sun' && <Sunbeam />}
+      {!loading && getWeatherCondition() === 'night' && <MoonNight />}
 
       {/* Toggle Button */}
       <button
@@ -183,6 +196,51 @@ export default function QRCodePage() {
           )}
         </div>
       </div>
+
+      {/* Dev Mode Weather Toggle */}
+      {isDev && (
+        <div className="fixed bottom-4 right-4 z-50 bg-black/80 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+          <div className="text-white text-xs mb-2 font-semibold">Weather Debug</div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setDebugWeather('sun')}
+              className={`px-3 py-2 rounded text-xs font-medium transition-all ${
+                debugWeather === 'sun'
+                  ? 'bg-yellow-500 text-black'
+                  : 'bg-white/10 text-white hover:bg-white/20'
+              }`}
+            >
+              ☀️ Sun
+            </button>
+            <button
+              onClick={() => setDebugWeather('rain')}
+              className={`px-3 py-2 rounded text-xs font-medium transition-all ${
+                debugWeather === 'rain'
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-white/10 text-white hover:bg-white/20'
+              }`}
+            >
+              🌧️ Rain
+            </button>
+            <button
+              onClick={() => setDebugWeather('night')}
+              className={`px-3 py-2 rounded text-xs font-medium transition-all ${
+                debugWeather === 'night'
+                  ? 'bg-purple-500 text-white'
+                  : 'bg-white/10 text-white hover:bg-white/20'
+              }`}
+            >
+              🌙 Night
+            </button>
+            <button
+              onClick={() => setDebugWeather(null)}
+              className="px-3 py-2 rounded text-xs font-medium bg-white/10 text-white hover:bg-white/20 transition-all"
+            >
+              ↻ Reset
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
