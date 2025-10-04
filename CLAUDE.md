@@ -99,12 +99,16 @@ npm run check
 app/
 ├── layout.js          # Root layout with font configuration
 ├── page.js            # Main page with MFE integration
-└── globals.css        # Global Tailwind styles
+├── qr-code/
+│   └── page.js        # QR code page with TheKeo App
+└── globals.css        # Global Tailwind styles (includes scrollbar hiding)
 
 components/
-└── ui/                # shadcn/ui components
-    ├── alert-dialog.jsx
-    └── button.jsx
+├── ui/                # shadcn/ui components
+│   ├── alert-dialog.jsx
+│   └── button.jsx
+├── TheKeoApp.jsx      # Bill-sharing application component
+└── ImageViewer.jsx    # Full-screen image viewer with React Portal
 
 lib/
 └── utils.js           # Utility functions (cn for className merging)
@@ -178,6 +182,7 @@ The project uses path aliases configured in jsconfig.json:
 - **class-variance-authority**: Type-safe component variants
 - **clsx & tailwind-merge**: Conditional className utilities
 - **lucide-react**: Icon library
+- **perfect-scrollbar**: Custom scrollbar library for smooth scrolling UX
 
 ## Development Notes
 
@@ -274,3 +279,30 @@ To quickly verify the setup is working:
 - **Language Context**: Vietnamese language context and user base
 - **Social Focus**: Emphasizes friend-to-friend interactions and shared experiences
 - **Cultural Note**: Built with Vietnamese users in mind for social bill-sharing scenarios
+
+## TheKeo App Features
+
+### QR Code Page (`/qr-code`)
+A bill-sharing application with payment tracking integrated with bank QR code:
+
+**Key Features:**
+- **Toggleable Layout**: TheKeo App panel can be shown/hidden with top-right button
+- **Bank Info with Copy-to-Clipboard**: Click any bank detail to copy (account number, name, bank name)
+- **Transaction API Integration**: Fetches real-time payment data from `https://go-transaction-api-wqzlk.sevalla.app/api/v1/transactions`
+- **Custom Scrollbar**: Uses perfect-scrollbar for smooth, auto-hiding scrollbars
+- **Image Gallery**: Multi-image support with full-screen viewer using React Portal
+- **Bill Splitting Calculator**: Dynamic calculation for splitting bills among friends
+- **Responsive Design**: Adapts between mobile and desktop layouts
+
+**Components:**
+- **TheKeoApp.jsx**: Main bill-sharing component with state management
+- **ImageViewer.jsx**: Full-screen image viewer with zoom, pan, rotate capabilities
+  - Uses React Portal to render outside parent DOM hierarchy
+  - Keyboard shortcuts (←/→ navigate, +/- zoom, Esc close)
+  - Mouse wheel zoom and drag-to-pan support
+
+**Styling Notes:**
+- Default browser scrollbar hidden globally in `globals.css`
+- Glass morphism design with backdrop-blur effects
+- Smooth transitions and animations throughout
+- Vietnamese language UI

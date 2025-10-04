@@ -29,6 +29,7 @@ const TheKeoApp = () => {
   const [showAddBill, setShowAddBill] = useState(false);
   const [imageViewer, setImageViewer] = useState({ show: false, images: [], currentIndex: 0 });
   const [calculator, setCalculator] = useState({ totalBill: '', numDrinkers: '' });
+  const [imageLoading, setImageLoading] = useState({});
   const [newBill, setNewBill] = useState({
     title: '',
     amount: '',
@@ -363,15 +364,27 @@ const TheKeoApp = () => {
 
             {bill.images && bill.images.length > 0 && (
               <div className="relative mb-2">
-                <img 
-                  src={bill.images[currentImageIndex[bill.id] || 0]} 
-                  alt="Bill" 
-                  className="w-full h-20 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity" 
-                  onClick={() => setImageViewer({ 
-                    show: true, 
-                    images: bill.images, 
-                    currentIndex: currentImageIndex[bill.id] || 0 
+                {/* Loading skeleton */}
+                {imageLoading[`${bill.id}-${currentImageIndex[bill.id] || 0}`] && (
+                  <div className="absolute inset-0 bg-white/5 rounded-lg animate-pulse flex items-center justify-center">
+                    <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  </div>
+                )}
+
+                <img
+                  src={bill.images[currentImageIndex[bill.id] || 0]}
+                  alt="Bill"
+                  className={`w-full h-20 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-all duration-300 ${
+                    imageLoading[`${bill.id}-${currentImageIndex[bill.id] || 0}`] ? 'opacity-0 blur-sm' : 'opacity-100'
+                  }`}
+                  onClick={() => setImageViewer({
+                    show: true,
+                    images: bill.images,
+                    currentIndex: currentImageIndex[bill.id] || 0
                   })}
+                  onLoadStart={() => setImageLoading(prev => ({ ...prev, [`${bill.id}-${currentImageIndex[bill.id] || 0}`]: true }))}
+                  onLoad={() => setImageLoading(prev => ({ ...prev, [`${bill.id}-${currentImageIndex[bill.id] || 0}`]: false }))}
+                  onError={() => setImageLoading(prev => ({ ...prev, [`${bill.id}-${currentImageIndex[bill.id] || 0}`]: false }))}
                 />
                 {bill.images.length > 1 && (
                   <>
