@@ -293,6 +293,11 @@ A bill-sharing application with payment tracking integrated with bank QR code:
 - **Image Gallery**: Multi-image support with full-screen viewer using React Portal
 - **Bill Splitting Calculator**: Dynamic calculation for splitting bills among friends
 - **Responsive Design**: Adapts between mobile and desktop layouts
+- **Weather-Based Visual Effects**:
+  - Real-time weather API integration using Open-Meteo (geolocation-based)
+  - Three weather themes: Sun (animated sunbeams), Rain (falling raindrops), Night (starry sky with moon)
+  - User-controllable weather theme toggle (bottom-right corner)
+  - Graceful fallback to Ho Chi Minh City coordinates if geolocation is denied
 
 **Components:**
 - **TheKeoApp.jsx**: Main bill-sharing component with state management
@@ -300,9 +305,12 @@ A bill-sharing application with payment tracking integrated with bank QR code:
   - Uses React Portal to render outside parent DOM hierarchy
   - Keyboard shortcuts (←/→ navigate, +/- zoom, Esc close)
   - Mouse wheel zoom and drag-to-pan support
+- **Sunbeam.jsx**: Canvas-based animated sunbeam effect for sunny weather
+- **MoonNight.jsx**: Animated night sky with stars, twinkling, clouds, and moon
 
 **Styling Notes:**
 - Default browser scrollbar hidden globally in `globals.css`
 - Glass morphism design with backdrop-blur effects
 - Smooth transitions and animations throughout
 - Vietnamese language UI
+- Custom CSS animations: `@keyframes rain`, `@keyframes move-background` for weather effects
