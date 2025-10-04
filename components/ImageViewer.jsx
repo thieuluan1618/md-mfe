@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, RotateCw } from 'lucide-react';
 
 const ImageViewer = ({ images, currentIndex, onClose, onIndexChange }) => {
@@ -121,8 +122,8 @@ const ImageViewer = ({ images, currentIndex, onClose, onIndexChange }) => {
 
   if (!images || images.length === 0) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex items-center justify-center">
+  const modalContent = (
+    <div className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-sm flex items-center justify-center">
       {/* Header Controls */}
       <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10">
         <div className="flex items-center gap-2 text-white">
@@ -251,6 +252,8 @@ const ImageViewer = ({ images, currentIndex, onClose, onIndexChange }) => {
       </div>
     </div>
   );
+
+  return typeof window !== 'undefined' ? createPortal(modalContent, document.body) : null;
 };
 
 export default ImageViewer;
