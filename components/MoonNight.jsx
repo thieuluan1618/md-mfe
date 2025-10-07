@@ -7,7 +7,7 @@ const MoonNight = () => {
       <div
         className="absolute inset-0"
         style={{
-          background: 'black url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/stars.png) repeat',
+          background: 'black url(/night-theme/stars.webp) repeat',
           zIndex: 0
         }}
       />
@@ -18,7 +18,7 @@ const MoonNight = () => {
         style={{
           width: '10000px',
           right: 0,
-          background: 'transparent url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/twinkling.png) repeat',
+          background: 'transparent url(/night-theme/twinkling.webp) repeat',
           backgroundSize: '1000px 1000px',
           zIndex: 2,
           animation: 'move-background 50s linear infinite'
@@ -31,7 +31,7 @@ const MoonNight = () => {
         style={{
           width: '10000px',
           right: 0,
-          background: 'transparent url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/clouds_repeat.png) repeat',
+          background: 'transparent url(/night-theme/clouds_repeat.webp) repeat',
           backgroundSize: '1000px 1000px',
           zIndex: 3,
           animation: 'move-background 140s linear infinite'
@@ -40,7 +40,7 @@ const MoonNight = () => {
 
       {/* Moon */}
       <img
-        src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/moon2.png"
+        src="/night-theme/moon2.webp"
         alt="Moon"
         className="absolute"
         style={{
