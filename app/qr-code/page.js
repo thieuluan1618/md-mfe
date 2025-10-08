@@ -1,97 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import TheKeoApp from "@/components/TheKeoApp";
 import { PanelRightOpen, PanelRightClose, Copy, Check } from "lucide-react";
 import Rain from "react-rain-animation";
 import Sunbeam from "@/components/Sunbeam";
 import MoonNight from "@/components/MoonNight";
 import NightRain from "@/components/NightRain";
+import { useWeather, getWeatherTheme } from "@/hooks/useWeather";
 import "react-rain-animation/lib/style.css";
 
 export default function QRCodePage() {
   const [showTheKeoApp, setShowTheKeoApp] = useState(false);
   const [copiedField, setCopiedField] = useState(null);
-  const [weather, setWeather] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [weatherOverride, setWeatherOverride] = useState(null);
 
-  useEffect(() => {
-    // Get user location and fetch weather
-    const fetchWeather = async (latitude, longitude) => {
-      try {
-        // Using Open-Meteo API (free, no API key needed)
-        const response = await fetch(
-          `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`
-        );
-        const data = await response.json();
-
-        if (data.current_weather) {
-          setWeather(data.current_weather);
-        }
-        setLoading(false);
-      } catch (error) {
-        console.error('Failed to fetch weather:', error);
-        setLoading(false);
-      }
-    };
-
-    // Request user location
-    const getUserLocation = () => {
-      if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          // Success callback
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            fetchWeather(latitude, longitude);
-
-            // Set up 5-minute interval to refresh weather
-            const intervalId = setInterval(() => {
-              fetchWeather(latitude, longitude);
-            }, 5 * 60 * 1000); // 5 minutes in milliseconds
-
-            // Store interval ID for cleanup
-            return () => clearInterval(intervalId);
-          },
-          // Error callback - fallback to Ho Chi Minh City
-          (error) => {
-            console.log('Location permission denied or error, using HCM as fallback:', error.message);
-            // Coordinates for Ho Chi Minh City: 10.8231° N, 106.6297° E
-            fetchWeather(10.8231, 106.6297);
-
-            // Set up 5-minute interval to refresh weather for fallback location
-            const intervalId = setInterval(() => {
-              fetchWeather(10.8231, 106.6297);
-            }, 5 * 60 * 1000);
-
-            return () => clearInterval(intervalId);
-          },
-          // Options
-          {
-            enableHighAccuracy: true,
-            timeout: 5000,
-            maximumAge: 0
-          }
-        );
-      } else {
-        // Geolocation not supported, fallback to Ho Chi Minh City
-        console.log('Geolocation not supported, using HCM as fallback');
-        fetchWeather(10.8231, 106.6297);
-
-        // Set up 5-minute interval to refresh weather for fallback location
-        const intervalId = setInterval(() => {
-          fetchWeather(10.8231, 106.6297);
-        }, 5 * 60 * 1000);
-
-        return () => clearInterval(intervalId);
-      }
-    };
-
-    const cleanup = getUserLocation();
-
-    // Return cleanup function
-    return cleanup;
-  }, []);
+  // Use custom weather hook
+  const { weather, loading } = useWeather();
 
   const copyToClipboard = async (text, field) => {
     try {
@@ -103,40 +28,16 @@ export default function QRCodePage() {
     }
   };
 
-  // Determine weather conditions based on weather code and time of day
-  // Weather codes from Open-Meteo: https://open-meteo.com/en/docs
-  const getWeatherCondition = () => {
-    // User override takes priority
-    if (weatherOverride) return weatherOverride;
-
-    if (!weather) return null;
-    const code = weather.weathercode;
-    const isDay = weather.is_day === 1;
-
-    // Rain codes: 51,53,55,56,57,61,63,65,66,67,80,81,82,95,96,99
-    const rainCodes = [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99];
-
-    // If it's raining
-    if (rainCodes.includes(code)) {
-      return isDay ? 'rain' : 'night-rain';
-    }
-
-    // If it's nighttime (sun has set)
-    if (!isDay) {
-      return 'night';
-    }
-
-    // Daytime and clear/cloudy weather
-    return 'sun';
-  };
+  // Get current weather theme condition
+  const weatherCondition = getWeatherTheme(weather, weatherOverride);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0f0f23] via-purple-900 to-pink-900 py-8 px-4 relative overflow-hidden">
       {/* Weather Effects */}
-      {!loading && getWeatherCondition() === 'rain' && <Rain numDrops={100} />}
-      {!loading && getWeatherCondition() === 'sun' && <Sunbeam />}
-      {!loading && getWeatherCondition() === 'night' && <MoonNight />}
-      {!loading && getWeatherCondition() === 'night-rain' && <NightRain />}
+      {!loading && weatherCondition === 'rain' && <Rain numDrops={100} />}
+      {!loading && weatherCondition === 'sun' && <Sunbeam />}
+      {!loading && weatherCondition === 'night' && <MoonNight />}
+      {!loading && weatherCondition === 'night-rain' && <NightRain />}
 
       {/* Toggle Button */}
       <button
