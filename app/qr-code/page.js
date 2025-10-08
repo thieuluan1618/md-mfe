@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import TheKeoApp from "@/components/TheKeoApp";
+import { useState, lazy, Suspense } from "react";
 import { PanelRightOpen, PanelRightClose, Copy, Check } from "lucide-react";
-import Rain from "react-rain-animation";
-import Sunbeam from "@/components/Sunbeam";
-import MoonNight from "@/components/MoonNight";
-import NightRain from "@/components/NightRain";
 import { useWeather, getWeatherTheme } from "@/hooks/useWeather";
 import "react-rain-animation/lib/style.css";
+
+// Lazy load heavy components
+const TheKeoApp = lazy(() => import("@/components/TheKeoApp"));
+const Rain = lazy(() => import("react-rain-animation"));
+const Sunbeam = lazy(() => import("@/components/Sunbeam"));
+const MoonNight = lazy(() => import("@/components/MoonNight"));
+const NightRain = lazy(() => import("@/components/NightRain"));
 
 export default function QRCodePage() {
   const [showTheKeoApp, setShowTheKeoApp] = useState(false);
@@ -34,10 +36,14 @@ export default function QRCodePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0f0f23] via-purple-900 to-pink-900 py-8 px-4 relative overflow-hidden">
       {/* Weather Effects */}
-      {!loading && weatherCondition === 'rain' && <Rain numDrops={100} />}
-      {!loading && weatherCondition === 'sun' && <Sunbeam />}
-      {!loading && weatherCondition === 'night' && <MoonNight />}
-      {!loading && weatherCondition === 'night-rain' && <NightRain />}
+      {!loading && (
+        <Suspense fallback={null}>
+          {weatherCondition === 'rain' && <Rain numDrops={100} />}
+          {weatherCondition === 'sun' && <Sunbeam />}
+          {weatherCondition === 'night' && <MoonNight />}
+          {weatherCondition === 'night-rain' && <NightRain />}
+        </Suspense>
+      )}
 
       {/* Toggle Button */}
       <button
@@ -63,10 +69,14 @@ export default function QRCodePage() {
               
               <div className="bg-white/5 rounded-xl p-6 mb-6 border border-white/20">
                 <div className="w-64 h-64 bg-white rounded-lg mx-auto flex items-center justify-center">
-                  <img 
+                  <img
                     src="/QRCode.svg"
-                    alt="Bank QRcode" 
+                    alt="Bank QRcode"
                     className="w-full h-full object-contain rounded-lg"
+                    loading="eager"
+                    fetchPriority="high"
+                    width="256"
+                    height="256"
                   />
                 </div>
               </div>
@@ -123,7 +133,13 @@ export default function QRCodePage() {
           {showTheKeoApp && (
             <div className="col-span-12 lg:col-span-8 animate-in fade-in slide-in-from-right duration-300">
               <div className="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 h-full">
-                <TheKeoApp />
+                <Suspense fallback={
+                  <div className="flex items-center justify-center h-64">
+                    <div className="text-white/70">Loading...</div>
+                  </div>
+                }>
+                  <TheKeoApp />
+                </Suspense>
               </div>
             </div>
           )}

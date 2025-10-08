@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Bank & TheKeo",
+  title: "Bank & TheKeo 💩",
   description: "QR Code thanh toán và chia bill cùng bạn bè",
   icons: {
     icon: [
@@ -12,5 +12,18 @@ export const metadata = {
 };
 
 export default function QRCodeLayout({ children }) {
-  return children;
+  return (
+    <>
+      {/* DNS prefetch and preconnect for external APIs */}
+      <link rel="dns-prefetch" href="https://api.open-meteo.com" />
+      <link rel="preconnect" href="https://api.open-meteo.com" crossOrigin="anonymous" />
+      <link rel="dns-prefetch" href="https://go-transaction-api-wqzlk.sevalla.app" />
+      <link rel="preconnect" href="https://go-transaction-api-wqzlk.sevalla.app" crossOrigin="anonymous" />
+
+      {/* Preload critical QR code image */}
+      <link rel="preload" href="/QRCode.svg" as="image" type="image/svg+xml" fetchPriority="high" />
+
+      {children}
+    </>
+  );
 }
