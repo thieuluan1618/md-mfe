@@ -6,6 +6,7 @@ import { PanelRightOpen, PanelRightClose, Copy, Check } from "lucide-react";
 import Rain from "react-rain-animation";
 import Sunbeam from "@/components/Sunbeam";
 import MoonNight from "@/components/MoonNight";
+import NightRain from "@/components/NightRain";
 import "react-rain-animation/lib/style.css";
 
 export default function QRCodePage() {
@@ -43,12 +44,27 @@ export default function QRCodePage() {
           (position) => {
             const { latitude, longitude } = position.coords;
             fetchWeather(latitude, longitude);
+
+            // Set up 5-minute interval to refresh weather
+            const intervalId = setInterval(() => {
+              fetchWeather(latitude, longitude);
+            }, 5 * 60 * 1000); // 5 minutes in milliseconds
+
+            // Store interval ID for cleanup
+            return () => clearInterval(intervalId);
           },
           // Error callback - fallback to Ho Chi Minh City
           (error) => {
             console.log('Location permission denied or error, using HCM as fallback:', error.message);
             // Coordinates for Ho Chi Minh City: 10.8231° N, 106.6297° E
             fetchWeather(10.8231, 106.6297);
+
+            // Set up 5-minute interval to refresh weather for fallback location
+            const intervalId = setInterval(() => {
+              fetchWeather(10.8231, 106.6297);
+            }, 5 * 60 * 1000);
+
+            return () => clearInterval(intervalId);
           },
           // Options
           {
@@ -61,10 +77,20 @@ export default function QRCodePage() {
         // Geolocation not supported, fallback to Ho Chi Minh City
         console.log('Geolocation not supported, using HCM as fallback');
         fetchWeather(10.8231, 106.6297);
+
+        // Set up 5-minute interval to refresh weather for fallback location
+        const intervalId = setInterval(() => {
+          fetchWeather(10.8231, 106.6297);
+        }, 5 * 60 * 1000);
+
+        return () => clearInterval(intervalId);
       }
     };
 
-    getUserLocation();
+    const cleanup = getUserLocation();
+
+    // Return cleanup function
+    return cleanup;
   }, []);
 
   const copyToClipboard = async (text, field) => {
@@ -77,7 +103,7 @@ export default function QRCodePage() {
     }
   };
 
-  // Determine weather conditions based on weather code
+  // Determine weather conditions based on weather code and time of day
   // Weather codes from Open-Meteo: https://open-meteo.com/en/docs
   const getWeatherCondition = () => {
     // User override takes priority
@@ -85,16 +111,22 @@ export default function QRCodePage() {
 
     if (!weather) return null;
     const code = weather.weathercode;
+    const isDay = weather.is_day === 1;
 
     // Rain codes: 51,53,55,56,57,61,63,65,66,67,80,81,82,95,96,99
     const rainCodes = [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99];
-    if (rainCodes.includes(code)) return 'rain';
 
-    // Cloudy/Night codes: 2,3,45,48 (cloudy, fog)
-    const cloudyCodes = [2, 3, 45, 48];
-    if (cloudyCodes.includes(code)) return 'night';
+    // If it's raining
+    if (rainCodes.includes(code)) {
+      return isDay ? 'rain' : 'night-rain';
+    }
 
-    // Clear/Sunny: 0,1 (clear sky, mainly clear)
+    // If it's nighttime (sun has set)
+    if (!isDay) {
+      return 'night';
+    }
+
+    // Daytime and clear/cloudy weather
     return 'sun';
   };
 
@@ -104,6 +136,7 @@ export default function QRCodePage() {
       {!loading && getWeatherCondition() === 'rain' && <Rain numDrops={100} />}
       {!loading && getWeatherCondition() === 'sun' && <Sunbeam />}
       {!loading && getWeatherCondition() === 'night' && <MoonNight />}
+      {!loading && getWeatherCondition() === 'night-rain' && <NightRain />}
 
       {/* Toggle Button */}
       <button
